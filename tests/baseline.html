@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Rock Mass Strength Calculator — Generalized Hoek–Brown</title>
+<style>
+:root{--bg:#eef2f6;--card:#fff;--ink:#17212b;--muted:#667085;--line:#d7dee7;--accent:#1267a8;--accent2:#0b4f83;--good:#0d7b57;--warn:#a15c00;--shadow:0 8px 28px rgba(24,39,75,.08)}
+*{box-sizing:border-box}body{margin:0;font-family:Inter,Segoe UI,Arial,sans-serif;background:linear-gradient(135deg,#f6f8fb,#e9eef4);color:var(--ink)}
+header{background:#17324d;color:#fff;padding:18px 24px;box-shadow:0 2px 10px rgba(0,0,0,.15)}
+header h1{margin:0;font-size:27px;letter-spacing:.2px}header p{margin:5px 0 0;color:#d7e5f0;font-size:13px}
+.wrap{max-width:1480px;margin:auto;padding:18px}.grid{display:grid;grid-template-columns:410px 1fr;gap:16px}.panel{background:var(--card);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);overflow:hidden}.panel h2{font-size:15px;margin:0;padding:11px 14px;background:#f5f7fa;border-bottom:1px solid var(--line)}.sec{padding:12px 14px;border-bottom:1px solid #edf0f4}.sec:last-child{border-bottom:0}.row{display:grid;grid-template-columns:1fr 150px 42px;gap:8px;align-items:center;margin:7px 0}.row.small{grid-template-columns:1fr 150px}.row label{font-size:13px}.unit{font-size:12px;color:var(--muted)}input,select{width:100%;padding:8px 9px;border:1px solid #c8d1dc;border-radius:7px;background:#fff;font-size:13px;color:var(--ink)}input:focus,select:focus{outline:2px solid rgba(18,103,168,.16);border-color:var(--accent)}button{cursor:pointer;border:1px solid #bfc9d5;border-radius:7px;background:#fff;padding:8px 10px;color:var(--ink)}button:hover{background:#f3f7fb}.pick{font-weight:700;color:var(--accent);padding:7px 0}.btnbar{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.primary{background:var(--accent);border-color:var(--accent);color:#fff}.primary:hover{background:var(--accent2)}
+.content{display:grid;grid-template-columns:1fr 1fr;gap:16px}.hero{grid-column:1/-1;padding:14px 18px;background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow)}.hero .formula{font-family:Cambria Math,Times New Roman,serif;font-size:22px;text-align:center;padding:10px;color:#23384b}.metrics{display:grid;grid-template-columns:repeat(4,minmax(130px,1fr));gap:10px}.metric{border:1px solid #dfe5ec;border-radius:10px;padding:10px;background:#fafbfd}.metric b{display:block;font-size:17px;margin-top:4px}.metric span{font-size:11px;color:var(--muted)}
+.chartbox{padding:14px;background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow)}.chartbox h3{margin:0 0 7px;font-size:14px}.chart{width:100%;height:340px;border:1px solid #e1e6ec;background:#fff;border-radius:8px}.legend{font-size:12px;color:var(--muted);margin-top:6px}.notice{font-size:12px;line-height:1.45;color:#4b5563;background:#f8fafc;border-left:4px solid var(--accent);padding:9px 10px;border-radius:6px}.refs{font-size:12px;line-height:1.55;color:#4a5563}.refs a{color:var(--accent)}
+.badge{display:inline-block;font-size:11px;padding:3px 7px;border-radius:999px;background:#e9f4ff;color:#0b5a91;margin-left:6px}.hidden{display:none!important}
+.modalBackdrop{position:fixed;inset:0;background:rgba(18,29,43,.5);display:flex;align-items:center;justify-content:center;padding:20px;z-index:50}.modal{width:min(980px,96vw);max-height:88vh;overflow:auto;background:#fff;border-radius:12px;box-shadow:0 24px 70px rgba(0,0,0,.28);border:1px solid #cbd5df}.modalHeader{position:sticky;top:0;background:#17324d;color:#fff;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;z-index:2}.modalHeader h3{margin:0;font-size:16px}.modalBody{padding:14px}.modalFooter{position:sticky;bottom:0;background:#f7f9fb;padding:10px 14px;border-top:1px solid var(--line);display:flex;justify-content:flex-end;gap:8px}.tbl{width:100%;border-collapse:collapse;font-size:12.5px}.tbl th,.tbl td{border:1px solid #d9e0e8;padding:8px;vertical-align:top}.tbl th{background:#f2f5f8;text-align:left}.tbl tr.pickrow:hover{background:#eef7ff;cursor:pointer}.gsiGrid{display:grid;grid-template-columns:170px repeat(5,1fr);gap:3px}.gsiGrid div{border:1px solid #d8dfe7;padding:9px;font-size:12px;min-height:58px}.gsiGrid .head{font-weight:700;background:#eef3f7}.gsiCell{cursor:pointer;background:#fbfcfd}.gsiCell:hover{background:#e9f5ff}.valuepill{display:inline-block;background:#17324d;color:#fff;padding:2px 6px;border-radius:999px;font-size:11px;margin-top:4px}
+@media(max-width:1000px){.grid{grid-template-columns:1fr}.content{grid-template-columns:1fr}.metrics{grid-template-columns:repeat(2,1fr)}}
+@media print{header,.left,.btnbar,.notice{display:none!important}.grid{display:block}.content{grid-template-columns:1fr 1fr}.panel,.hero,.chartbox{box-shadow:none}.wrap{max-width:none;padding:0}}
+</style>
+</head>
+<body>
+<header><h1>Rock Mass Strength Calculator <span class="badge">Hoek–Brown 2002</span></h1><p>Generalized Hoek–Brown • Equivalent Mohr–Coulomb • Hoek–Diederichs rock-mass modulus • Reference pickers</p></header>
+<div class="wrap"><div class="grid">
+<aside class="panel left">
+<h2>Project & Units</h2>
+<div class="sec"><div class="row small"><label>Stress unit</label><select id="unit"><option value="MPa">Megapascals (MPa)</option><option value="kPa">Kilopascals (kPa)</option><option value="GPa">Gigapascals (GPa)</option></select></div></div>
+<h2>Input Parameters</h2>
+<div class="sec">
+<div class="row"><label>Intact UCS, σ<sub>ci</sub></label><input id="sigci" type="number" step="any" value="30"><button class="pick" onclick="openPicker('ucs')">+</button></div>
+<div class="row"><label>GSI</label><input id="gsi" type="number" min="0" max="100" step="1" value="50"><button class="pick" onclick="openPicker('gsi')">+</button></div>
+<div class="row"><label>Intact constant, m<sub>i</sub></label><input id="mi" type="number" step="any" value="10"><button class="pick" onclick="openPicker('mi')">+</button></div>
+<div class="row"><label>Disturbance factor, D</label><input id="D" type="number" min="0" max="1" step="0.05" value="0"><button class="pick" onclick="openPicker('D')">+</button></div>
+<div class="row"><label>Intact modulus, E<sub>i</sub></label><input id="Ei" type="number" step="any" value="12000"><button class="pick" onclick="openPicker('mr')">+</button></div>
+<div class="row"><label>Application</label><select id="application"><option value="custom">Custom</option><option value="general">General</option><option value="tunnel">Tunnel</option><option value="slope">Slope</option></select><span></span></div>
+<div id="customFields" class="row"><label>σ′<sub>3max</sub></label><input id="sig3max" type="number" step="any" value="7.5"><span class="unit">MPa</span></div>
+<div id="depthFields" class="hidden"><div class="row"><label id="depthLabel">Tunnel depth H</label><input id="H" type="number" step="any" value="100"><span class="unit">m</span></div><div class="row"><label>Unit weight γ</label><input id="gamma" type="number" step="any" value="0.027"><span class="unit">MN/m³</span></div></div>
+</div>
+<h2>Modulus Estimation Method</h2>
+<div class="sec"><select id="modMethod"><option value="generalized">Generalized Hoek & Diederichs (2006) — recommended</option><option value="simplified">Simplified Hoek & Diederichs (2006)</option><option value="hcc2002">Hoek, Carranza-Torres & Corkum (2002)</option></select></div>
+<h2>Actions</h2><div class="sec btnbar"><button onclick="resetDefaults()">Default</button><button onclick="window.print()">Report</button><button onclick="exportExcel()">Export Excel</button><button onclick="openPicker('help')">Help</button><button onclick="openPicker('refs')">References</button><button onclick="openPicker('about')">About</button></div>
+</aside>
+<main class="content">
+<section class="hero"><div class="formula">σ′₁ = σ′₃ + σ<sub>ci</sub> [ m<sub>b</sub> (σ′₃ / σ<sub>ci</sub>) + s ]<sup>a</sup></div><div class="metrics" id="metrics"></div></section>
+<section class="chartbox"><h3>Major vs. Minor Principal Stress</h3><svg id="chartPrincipal" class="chart" viewBox="0 0 640 340"></svg><div class="legend">Hoek–Brown envelope (curved) and equivalent Mohr–Coulomb fit (linear).</div></section>
+<section class="chartbox"><h3>Shear vs. Normal Stress</h3><svg id="chartShear" class="chart" viewBox="0 0 640 340"></svg><div class="legend">Hoek–Brown transformed with the tangency relation; equivalent Mohr–Coulomb: τ = c′ + σ′<sub>n</sub> tanφ′.</div></section>
+<section class="hero"><h3 style="margin-top:0">Engineering notes</h3><div class="notice">Equivalent Mohr–Coulomb parameters are <b>stress-range dependent</b>. Changing General / Tunnel / Slope / Custom changes σ′<sub>3max</sub> and therefore c′ and φ′. This does not change the non-linear Hoek–Brown parameters m<sub>b</sub>, s and a.</div><div class="refs" style="margin-top:10px">The calculator implements the Generalized Hoek–Brown criterion (Hoek, Carranza-Torres & Corkum, 2002), tunnel/slope stress-range recommendations, and the Hoek–Diederichs (2006) rock-mass modulus equations. Use laboratory and site-specific data whenever available; picker values are guidance, not substitutes for testing.</div></section>
+</main>
+</div></div>
+<div id="modalHost"></div>
+<script>
+const $=id=>document.getElementById(id);
+const state={unit:'MPa'};
+const ucsRows=[
+['R6 — Extremely strong','> 250','Specimen can only be chipped with a geological hammer','Fresh basalt, chert, diabase, gneiss, granite, quartzite',300],
+['R5 — Very strong','100–250','Specimen requires many blows of a geological hammer to fracture it','Amphibolite, sandstone, basalt, gabbro, gneiss, granodiorite, limestone, marble, rhyolite, tuff',175],
+['R4 — Strong','50–100','Specimen requires more than one blow of a geological hammer to fracture it','Limestone, marble, phyllite, sandstone, schist, shale',75],
+['R3 — Medium strong','25–50','Cannot be scraped or peeled with a pocket knife; can be fractured with a single geological-hammer blow','Claystone, coal, concrete, schist, shale, siltstone',37.5],
+['R2 — Weak','5–25','Can be peeled with a pocket knife with difficulty; shallow indentation by firm hammer blow','Chalk, rock salt, potash',15],
+['R1 — Very weak','1–5','Crumbles under firm blows; can be peeled by a pocket knife','Highly weathered or altered rock',3],
+['R0 — Extremely weak','0.25–1','Indented by thumbnail','Stiff fault gouge',0.6]];
+const miRows=[
+['Granite',32,'±3'],['Granodiorite',29,'±3'],['Diorite',25,'±5'],['Gabbro',27,'±3'],['Basalt',25,'±5'],['Dolerite',25,'±5'],['Andesite',25,'±5'],['Rhyolite',25,'±5'],['Quartzite',20,'±3'],['Conglomerate',21,'±3'],['Sandstone',17,'±4'],['Greywacke',18,'±3'],['Siltstone',7,'±2'],['Claystone',4,'±2'],['Shale',6,'±2'],['Limestone',10,'±2'],['Dolomite',9,'±3'],['Chalk',7,'±2'],['Gypsum',8,'±2'],['Anhydrite',12,'±2'],['Marble',9,'±3'],['Hornfels',19,'±4'],['Metasandstone',19,'±3'],['Phyllite',7,'±3'],['Schist',12,'±3'],['Slate',7,'±4']];
+const dRows=[
+['Tunnel / underground — TBM or excellent controlled blasting','Minimal disturbance to confined rock mass',0.0],
+['Tunnel — mechanical/hand excavation in poor rock mass','Minimal disturbance when squeezing/heave is controlled',0.0],
+['Tunnel — very poor blasting in hard rock','Severe local blast damage',0.8],
+['Slope — careful small-scale blasting','Moderate blast damage',0.7],
+['Slope — production blasting','Severe disturbance',1.0],
+['Slope — mechanical excavation in soft rock','Little blast damage',0.0]];
+const mrRows=[['Diabase / dense intrusive',300],['Granite / gneiss',400],['Quartzite',500],['Sandstone',250],['Siltstone',200],['Shale',150],['Limestone',350],['Dolomite',350],['Marble',400],['Schist / phyllite',250]];
+function fmt(x,n=4){if(!Number.isFinite(x))return '—'; const ax=Math.abs(x); if(ax!==0&&(ax<0.001||ax>=1e5))return x.toExponential(3); return x.toFixed(n)}
+function calc(){
+ let sigci=+$('sigci').value, GSI=+$('gsi').value, mi=+$('mi').value, D=+$('D').value, Ei=+$('Ei').value;
+ GSI=Math.max(0,Math.min(100,GSI));D=Math.max(0,Math.min(1,D));
+ const mb=mi*Math.exp((GSI-100)/(28-14*D));
+ const s=Math.exp((GSI-100)/(9-3*D));
+ const a=0.5+(1/6)*(Math.exp(-GSI/15)-Math.exp(-20/3));
+ const sigt=-s*sigci/mb;
+ const sigc=sigci*Math.pow(s,a);
+ const sigcm=sigci*((mb+4*s-a*(mb-8*s))*Math.pow(mb/4+s,a-1))/(2*(1+a)*(2+a));
+ let Erm; const method=$('modMethod').value;
+ if(method==='generalized') Erm=Ei*(0.02+(1-D/2)/(1+Math.exp((60+15*D-GSI)/11)));
+ else if(method==='simplified') Erm=100000*((1-D/2)/(1+Math.exp((75+25*D-GSI)/11)));
+ else {const base=Math.pow(10,(GSI-10)/40); Erm=1000*base*(sigci<=100?Math.sqrt(sigci/100):1)*(1-D/2);}
+ let app=$('application').value, sig3max;
+ if(app==='general') sig3max=sigci/4;
+ else if(app==='custom') sig3max=Math.max(0,+$('sig3max').value);
+ else {const H=Math.max(0.001,+$('H').value),gamma=Math.max(1e-9,+$('gamma').value),ratio=sigcm/(gamma*H); sig3max=(app==='tunnel'?0.47:0.72)*sigcm*Math.pow(ratio,app==='tunnel'?-0.94:-0.91);}
+ if(app!=='custom') $('sig3max').value=fmt(sig3max,4);
+ const s3n=sig3max/sigci; const q=Math.max(1e-14,s+mb*s3n);
+ const X=6*a*mb*Math.pow(q,a-1), den=(1+a)*(2+a);
+ const sinphi=X/(2*den+X); const phi=Math.asin(Math.max(-.999999,Math.min(.999999,sinphi)));
+ const c=sigci*(((1+2*a)*s+(1-a)*mb*s3n)*Math.pow(q,a-1))/(den*Math.sqrt(1+X/den));
+ renderMetrics({mb,s,a,sigt,sigc,sigcm,Erm,c,phi:phi*180/Math.PI,sig3max});
+ plotPrincipal({sigci,mb,s,a,c,phi,sigt,sig3max}); plotShear({sigci,mb,s,a,c,phi,sigt,sig3max});
+ return {sigci,GSI,mi,D,Ei,mb,s,a,sigt,sigc,sigcm,Erm,c,phi:phi*180/Math.PI,sig3max,app,method};
+}
+function renderMetrics(v){const items=[['mᵦ',fmt(v.mb,4),'Hoek–Brown'],['s',fmt(v.s,4),'Hoek–Brown'],['a',fmt(v.a,4),'Hoek–Brown'],['σ′₃max',fmt(v.sig3max,4)+' MPa','Fit range'],['σt',fmt(v.sigt,4)+' MPa','Rock-mass tensile'],['σc',fmt(v.sigc,4)+' MPa','Rock-mass UCS'],['σcm',fmt(v.sigcm,4)+' MPa','Global rock-mass strength'],['Erm',fmt(v.Erm,2)+' MPa','Rock-mass modulus'],["c′",fmt(v.c,4)+' MPa','Equivalent M–C'],["φ′",fmt(v.phi,2)+'°','Equivalent M–C']]; $('metrics').innerHTML=items.map(x=>`<div class="metric"><span>${x[2]}</span><b>${x[0]} = ${x[1]}</b></div>`).join('')}
+function axes(svg,xmin,xmax,ymin,ymax,xlab,ylab){const W=640,H=340,L=64,R=20,T=18,B=52; const sx=x=>L+(x-xmin)/(xmax-xmin)*(W-L-R), sy=y=>H-B-(y-ymin)/(ymax-ymin)*(H-T-B); let out=''; for(let i=0;i<=5;i++){const x=xmin+(xmax-xmin)*i/5, px=sx(x);out+=`<line x1="${px}" y1="${T}" x2="${px}" y2="${H-B}" stroke="#e7ebef"/><text x="${px}" y="${H-B+19}" font-size="11" text-anchor="middle" fill="#667085">${fmt(x,2)}</text>`; const y=ymin+(ymax-ymin)*i/5,py=sy(y);out+=`<line x1="${L}" y1="${py}" x2="${W-R}" y2="${py}" stroke="#e7ebef"/><text x="${L-9}" y="${py+4}" font-size="11" text-anchor="end" fill="#667085">${fmt(y,2)}</text>`} out+=`<line x1="${L}" y1="${H-B}" x2="${W-R}" y2="${H-B}" stroke="#697586"/><line x1="${L}" y1="${T}" x2="${L}" y2="${H-B}" stroke="#697586"/><text x="${(L+W-R)/2}" y="${H-10}" font-size="12" text-anchor="middle">${xlab}</text><text transform="translate(17 ${(T+H-B)/2}) rotate(-90)" font-size="12" text-anchor="middle">${ylab}</text>`; return {sx,sy,out};}
+function path(points,sx,sy){return points.map((p,i)=>(i?'L':'M')+sx(p[0]).toFixed(2)+' '+sy(p[1]).toFixed(2)).join(' ')}
+function plotPrincipal(v){const xmin=Math.min(v.sigt,0),xmax=Math.max(v.sig3max,0.1), pts=[]; for(let i=0;i<=160;i++){const x=xmin+(xmax-xmin)*i/160,base=v.mb*x/v.sigci+v.s;if(base>=0)pts.push([x,x+v.sigci*Math.pow(base,v.a)])} const sin=Math.sin(v.phi), k=(1+sin)/(1-sin), intercept=2*v.c*Math.cos(v.phi)/(1-sin); const line=[[xmin,intercept+k*xmin],[xmax,intercept+k*xmax]]; const ymax=Math.max(...pts.map(p=>p[1]),...line.map(p=>p[1]))*1.08;const A=axes($('chartPrincipal'),xmin,xmax,Math.min(0,...pts.map(p=>p[1])) ,ymax,"Minor principal stress σ′₃ (MPa)","Major principal stress σ′₁ (MPa)"); $('chartPrincipal').innerHTML=A.out+`<path d="${path(pts,A.sx,A.sy)}" fill="none" stroke="#1267a8" stroke-width="3"/><path d="${path(line,A.sx,A.sy)}" fill="none" stroke="#d05a45" stroke-width="2.2" stroke-dasharray="7 5"/><text x="470" y="34" font-size="11" fill="#1267a8">Hoek–Brown</text><text x="470" y="50" font-size="11" fill="#d05a45">Mohr–Coulomb</text>`;}
+function plotShear(v){const pts=[]; let maxN=0,maxT=0; for(let i=0;i<=180;i++){const s3=Math.max(v.sigt+1e-8,v.sigt+(v.sig3max-v.sigt)*i/180),base=v.mb*s3/v.sigci+v.s;if(base<=0)continue; const s1=s3+v.sigci*Math.pow(base,v.a); const ds=1+v.a*v.mb*Math.pow(base,v.a-1); const sn=s3+(s1-s3)/(1+ds); const tau=(sn-s3)*Math.sqrt(Math.max(ds,0)); if(Number.isFinite(sn)&&Number.isFinite(tau)){pts.push([sn,tau]);maxN=Math.max(maxN,sn);maxT=Math.max(maxT,tau)}} const xmax=Math.max(maxN,0.1)*1.08; const mc=[];for(let i=0;i<=100;i++){const x=xmax*i/100;mc.push([x,v.c+x*Math.tan(v.phi)])} const ymax=Math.max(maxT,...mc.map(p=>p[1]))*1.08; const A=axes($('chartShear'),0,xmax,0,ymax,"Normal stress σ′n (MPa)","Shear stress τ (MPa)"); $('chartShear').innerHTML=A.out+`<path d="${path(pts,A.sx,A.sy)}" fill="none" stroke="#1267a8" stroke-width="3"/><path d="${path(mc,A.sx,A.sy)}" fill="none" stroke="#d05a45" stroke-width="2.2" stroke-dasharray="7 5"/><text x="470" y="34" font-size="11" fill="#1267a8">Hoek–Brown</text><text x="470" y="50" font-size="11" fill="#d05a45">Mohr–Coulomb</text>`;}
+function updateApp(){const a=$('application').value;$('customFields').classList.toggle('hidden',a!=='custom');$('depthFields').classList.toggle('hidden',!(a==='tunnel'||a==='slope'));$('depthLabel').textContent=a==='slope'?'Slope height H':'Tunnel depth H';calc();}
+function openPicker(type){let title='',body='',footer='<button onclick="closeModal()">Close</button>';
+ if(type==='ucs'){title='Intact UCS — Field Estimate';body=`<table class="tbl"><tr><th>Grade</th><th>UCS (MPa)</th><th>Field estimate</th><th>Examples</th></tr>${ucsRows.map(r=>`<tr class="pickrow" onclick="setVal('sigci',${r[4]})"><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td></tr>`).join('')}</table><p class="notice">Click a row to insert a representative midpoint value. Replace it with laboratory UCS whenever available.</p>`}
+ if(type==='mi'){title='Intact Rock Constant mᵢ — Reference Values';body=`<table class="tbl"><tr><th>Rock type</th><th>mᵢ</th><th>Typical spread</th></tr>${miRows.map(r=>`<tr class="pickrow" onclick="setVal('mi',${r[1]})"><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td></tr>`).join('')}</table><p class="notice">Reference values are indicative. Use triaxial-test calibration where possible.</p>`}
+ if(type==='D'){title='Disturbance Factor D — Engineering Guidance';body=`<table class="tbl"><tr><th>Excavation condition</th><th>Interpretation</th><th>D</th></tr>${dRows.map(r=>`<tr class="pickrow" onclick="setVal('D',${r[2]})"><td>${r[0]}</td><td>${r[1]}</td><td>${r[2].toFixed(1)}</td></tr>`).join('')}</table>`}
+ if(type==='mr'){title='Estimate Intact Modulus Eᵢ using Modulus Ratio MR';body=`<p>Eᵢ = MR × σci</p><table class="tbl"><tr><th>Rock type</th><th>Representative MR</th></tr>${mrRows.map(r=>`<tr class="pickrow" onclick="setMR(${r[1]})"><td>${r[0]}</td><td>${r[1]}</td></tr>`).join('')}</table><p class="notice">MR values are only preliminary estimates. Laboratory Eᵢ is preferred.</p>`}
+ if(type==='gsi'){title='GSI Picker — Simplified Observational Matrix';const structures=[['Massive / intact',85,90,95,97,100],['Blocky',55,65,75,85,90],['Very blocky',45,55,65,75,80],['Blocky / disturbed',35,45,55,65,70],['Disintegrated',20,30,40,50,55],['Laminated / sheared',10,20,30,40,45]],surfaces=['Very poor','Poor','Fair','Good','Very good'];body=`<div class="gsiGrid"><div class="head">Structure ↓ / Surface →</div>${surfaces.map(x=>`<div class="head">${x}</div>`).join('')}${structures.map(r=>`<div class="head">${r[0]}</div>${r.slice(1).map(v=>`<div class="gsiCell" onclick="setVal('gsi',${v})">Typical GSI <span class="valuepill">${v}</span></div>`).join('')}`).join('')}</div><p class="notice">This is a compact screening matrix, not a reproduction of the copyrighted Rocscience GSI chart. For project work, use the original Hoek/Marinos GSI charts and field geological mapping.</p>`}
+ if(type==='help'){title='How to use';body=`<ol><li>Enter intact UCS σci, GSI, mi and disturbance D.</li><li>Enter intact modulus Ei or estimate it using MR.</li><li>Select Custom, General, Tunnel or Slope for the failure-envelope stress range.</li><li>Read Hoek–Brown rock-mass parameters and the stress-range-dependent equivalent Mohr–Coulomb c′ and φ′.</li><li>Use the plots to review the fit before transferring parameters into numerical or limit-equilibrium software.</li></ol>`}
+ if(type==='refs'){title='Theory & References';body=`<div class="refs"><b>Primary theory</b><br>Hoek, E., Carranza-Torres, C. & Corkum, B. (2002). Hoek–Brown failure criterion — 2002 edition.<br>Hoek, E. & Diederichs, M.S. (2006). Empirical estimation of rock mass modulus. IJRMMS 43, 203–215.<br><br><b>Implemented equations</b><br>Generalized Hoek–Brown: mb, s, a; tensile strength; rock-mass UCS; global rock-mass strength; equivalent Mohr–Coulomb c′ and φ′; General/Tunnel/Slope/Custom σ3max; Generalized and Simplified Hoek–Diederichs modulus.<br><br><b>Rocscience documentation cross-check</b><br>RSData: Generalized Hoek–Brown Criterion, Failure Range, GSI Calculator, Rock Mass Modulus.</div>`}
+ if(type==='about'){title='About this calculator';body=`<p>Independent educational/engineering calculator inspired by the workflow of ORMAS and cross-checked against published Hoek–Brown theory and Rocscience documentation. It is <b>not</b> a Rocscience product and does not reproduce RSData source code.</p><p>Verification testcase: σci=30 MPa, GSI=50, mi=10, D=0, Ei=12000 MPa, σ3max=7.5 MPa reproduces the ORMAS V2.0 values shown in the reference screenshot.</p>`}
+ $('modalHost').innerHTML=`<div class="modalBackdrop" onclick="if(event.target===this)closeModal()"><div class="modal"><div class="modalHeader"><h3>${title}</h3><button style="color:#fff;background:transparent;border-color:#6f879e" onclick="closeModal()">✕</button></div><div class="modalBody">${body}</div><div class="modalFooter">${footer}</div></div></div>`;}
+function closeModal(){$('modalHost').innerHTML=''} function setVal(id,v){$(id).value=v;closeModal();calc()} function setMR(mr){$('Ei').value=mr*(+$('sigci').value);closeModal();calc()}
+function resetDefaults(){$('sigci').value=30;$('gsi').value=50;$('mi').value=10;$('D').value=0;$('Ei').value=12000;$('application').value='custom';$('sig3max').value=7.5;$('H').value=100;$('gamma').value=.027;$('modMethod').value='generalized';updateApp()}
+function exportExcel(){const r=calc();const rows=[['Rock Mass Strength Calculator',''],['Parameter','Value'],['sigci (MPa)',r.sigci],['GSI',r.GSI],['mi',r.mi],['D',r.D],['Ei (MPa)',r.Ei],['Application',r.app],['sig3max (MPa)',r.sig3max],['mb',r.mb],['s',r.s],['a',r.a],['Tensile strength sigt (MPa)',r.sigt],['Rock mass UCS sigc (MPa)',r.sigc],['Global rock mass strength sigcm (MPa)',r.sigcm],['Erm (MPa)',r.Erm],["Equivalent cohesion c' (MPa)",r.c],["Equivalent friction angle phi' (deg)",r.phi],['Modulus method',r.method]];let html='<table>'+rows.map(x=>'<tr>'+x.map(y=>'<td>'+y+'</td>').join('')+'</tr>').join('')+'</table>';const blob=new Blob([html],{type:'application/vnd.ms-excel'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='rock_mass_strength_results.xls';a.click();URL.revokeObjectURL(url)}
+['sigci','gsi','mi','D','Ei','sig3max','H','gamma','modMethod'].forEach(id=>$(id).addEventListener('input',calc));$('application').addEventListener('change',updateApp);updateApp();
+</script>
+</body></html>
