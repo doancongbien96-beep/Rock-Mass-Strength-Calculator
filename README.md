@@ -1,12 +1,12 @@
 # Rock Mass Strength Calculator
 
-Independent Generalized Hoek–Brown engineering workbench, with an original desktop interface informed by public RSData workflow conventions. It uses no Rocscience source code. The GSI dialog displays the two reference screenshots supplied for this project; the live type selector and GSI input apply values to the calculator.
+Independent Generalized Hoek–Brown engineering workbench, with an original desktop interface informed by public RSData workflow conventions. It uses no Rocscience source code. The GSI dialog displays Figure 1 (general jointed rock) and the revised Figure 2 (Flysch) from the supplied GSI paper; the picker explains applicability, qualitative ranges, and the single representative value used by each calculation.
 
 Live site: https://doancongbien96-beep.github.io/Rock-Mass-Strength-Calculator/
 
 Open index.html locally to run the calculator. No build or dependency installation is required.
 
-The toolbar provides reset, print report, Excel export, and JSON project save/open. The left pane contains material inputs and reference pickers for UCS, GSI, mi, disturbance and modulus ratio. The GSI dialog displays the supplied jointed-rock or Flysch reference image based on the selected type, with a separate editable GSI value. Central model tabs explain Generalized Hoek–Brown and equivalent Mohr–Coulomb; both stress charts update with inputs. Toggle either envelope, inspect cursor stress coordinates, wheel to zoom, or double-click / Reset view to restore. The right pane shows calculated properties, and the status bar reports validation errors. All stress and modulus values are in MPa; dimensions are in m and unit weight in MN/m³.
+The toolbar provides reset, print report, Excel export, and JSON project save/open. The left pane contains material inputs and reference pickers for UCS, GSI, mi, disturbance and modulus ratio. The GSI dialog displays the supplied general-rock or Flysch reference chart, with field-use guidance and an editable representative GSI value. When uncertainty matters, run lower and upper values separately; the equations use one GSI value per run. Central model tabs explain Generalized Hoek–Brown and equivalent Mohr–Coulomb; both stress charts update with inputs. Toggle either envelope, inspect cursor stress coordinates, wheel to zoom, or double-click / Reset view to restore. The right pane shows calculated properties, and the status bar reports validation errors. All stress and modulus values are in MPa; dimensions are in m and unit weight in MN/m³.
 
 General, Tunnel, Slope and Custom applications retain the original failure-range calculations. Invalid or incomplete inputs keep the previous valid results and show a status message. Reference picker values are preliminary guidance; determine GSI from site mapping and project data.
 
