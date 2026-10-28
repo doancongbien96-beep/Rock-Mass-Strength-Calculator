@@ -6,9 +6,9 @@ Live site: https://doancongbien96-beep.github.io/Rock-Mass-Strength-Calculator/
 
 Open index.html locally to run the calculator. No build or dependency installation is required.
 
-The toolbar provides reset, print report, Excel export, and JSON project save/open. The left pane contains material inputs and reference pickers for UCS, GSI, mi, disturbance and modulus ratio. Central model tabs explain Generalized Hoek–Brown and equivalent Mohr–Coulomb; both stress charts update with inputs. Toggle either envelope, inspect cursor stress coordinates, wheel to zoom, or double-click / Reset view to restore. The right pane shows calculated properties, and the status bar reports validation errors. All stress and modulus values are in MPa; dimensions are in m and unit weight in MN/m³.
+The toolbar provides reset, print report, Excel export, and JSON project save/open. The left pane contains material inputs and reference pickers for UCS, GSI, mi, disturbance and modulus ratio. The GSI dialog offers jointed and heterogeneous (Flysch) modes, a structure/surface-condition matrix, selectable representative values and direct numeric entry. Flysch groups are screening examples rather than a calibrated classification chart. Central model tabs explain Generalized Hoek–Brown and equivalent Mohr–Coulomb; both stress charts update with inputs. Toggle either envelope, inspect cursor stress coordinates, wheel to zoom, or double-click / Reset view to restore. The right pane shows calculated properties, and the status bar reports validation errors. All stress and modulus values are in MPa; dimensions are in m and unit weight in MN/m³.
 
-General, Tunnel, Slope and Custom applications retain the original failure-range calculations. Invalid or incomplete inputs keep the previous valid results and show a status message. Reference picker values are preliminary guidance; the GSI matrix is a simplified screening aid.
+General, Tunnel, Slope and Custom applications retain the original failure-range calculations. Invalid or incomplete inputs keep the previous valid results and show a status message. Reference picker values are preliminary guidance; the GSI matrix and Flysch groups are original simplified screening aids.
 
 ## Verification
 
